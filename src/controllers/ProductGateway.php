@@ -13,7 +13,8 @@ class ProductGateway
     public function getAll(): array
     {
         $sql = "SELECT *
-                FROM products";
+                FROM products
+                ORDER BY sku";
 
         $stmt = $this->conn->query($sql);
 
