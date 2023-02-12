@@ -106,15 +106,13 @@ readonly class ProductController
                 // If sku doesn't exist - just ignore it
 
                 // Delete rows in db with specified sku
-                $this->gateway->massDelete($data);
+                $this->gateway->massDelete($data["skuList"]);
 
-                http_response_code(204);
+                http_response_code(200);
+                echo json_encode([
+                    "data" => $data
+                ]);
                 break;
-
-            // In case of wrong request method
-            default:
-                http_response_code(405);
-                header("Access-Control-Allow-Methods: GET, DELETE");
         }
     }
 
