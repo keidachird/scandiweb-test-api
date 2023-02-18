@@ -1,0 +1,71 @@
+.product-create {
+  &__header {
+    display: flex;
+    align-items: center;
+
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border-bottom: 0.2rem solid #343a40;
+  }
+
+  &__title {
+    font-size: 3.6rem;
+  }
+
+  .btn--add {
+    margin-left: auto;
+    margin-right: 5rem;
+  }
+}
+
+.product-form {
+  font-size: 2.4rem;
+  box-shadow: 0 0 2rem 1rem rgba(#343a40, 0.05);
+
+  width: 70%;
+  margin-inline: auto;
+  padding: 5rem 0;
+
+  border: 0.2rem solid #343a40;
+  border-radius: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+
+  &__item {
+    width: 80%;
+    padding: 0 10rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__input,
+  &__select {
+    font-family: inherit;
+    font-size: 1.8rem;
+    caret-color: #343a40;
+
+    width: 50%;
+    height: 3rem;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    outline: 0.2rem solid #343a40;
+
+    transition: all 0.2s ease;
+  }
+
+  &__input:focus,
+  &__select:focus {
+    background-color: #fff9db;
+    outline: 0.2rem solid #ffd43b;
+  }
+
+  &__input::-webkit-inner-spin-button {
+    background-color: red;
+  }
+}

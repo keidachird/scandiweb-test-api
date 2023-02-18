@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.6rem;
+  color: #343a40;
+  caret-color: transparent;
+}
+
+// Reusable elements
+.container {
+  max-width: 120rem;
+  padding: 3rem;
+  margin-inline: auto;
+}
+
+.btn {
+  display: block;
+  cursor: pointer;
+  background: none;
+
+  &,
+  &:link,
+  &:visited {
+    font-family: inherit;
+    font-size: 2rem;
+    color: inherit;
+    text-decoration: none;
+
+    padding: 0.8rem 2.4rem;
+    border: 0.2rem solid #343a40;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 2rem 1rem rgba(#343a40, 0.05);
+
+    transition: all 0.2s ease;
+  }
+
+  &:hover,
+  &:active {
+    scale: 1.05;
+    box-shadow: 0 0 2rem 1rem rgba(black, 0.1);
+    background-color: #fff9db;
+    border: 0.2rem solid #ffd43b;
+  }
+}
+
+// Layout
+.App {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex: 0 0 auto;
+
+  &__text {
+    font-size: 2rem;
+    text-align: center;
+
+    border-top: 0.2rem solid #343a40;
+    padding: 2rem;
+  }
+}

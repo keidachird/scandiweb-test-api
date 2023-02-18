@@ -1,0 +1,25 @@
+.product-list {
+  &__header {
+    display: flex;
+    align-items: center;
+
+    padding: 3rem;
+    margin-bottom: 3rem;
+    border-bottom: 0.2rem solid #343a40;
+  }
+
+  &__title {
+    font-size: 3.6rem;
+  }
+
+  .btn--add {
+    margin-left: auto;
+    margin-right: 5rem;
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+    gap: 2rem;
+  }
+}

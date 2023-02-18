@@ -1,0 +1,47 @@
+.product-item {
+  font-size: 2rem;
+  text-align: center;
+
+  padding: 1.6rem;
+  border: 0.3rem solid #343a40;
+  border-radius: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  &__checkbox {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+
+    appearance: none;
+    width: 3rem;
+    height: 3rem;
+    border: 0.2rem solid #343a40;
+    border-radius: 0.2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:checked::before {
+      scale: 1;
+    }
+
+    &::before {
+      content: '';
+      display: block;
+      width: 70%;
+      height: 70%;
+      background-color: #343a40;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+
+      scale: 0;
+      transition: scale 0.1s ease;
+    }
+  }
+}
