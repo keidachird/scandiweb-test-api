@@ -1,17 +1,19 @@
 <?php
 
-class Product implements IProduct
+abstract class Product
 {
     protected string $sku;
     protected string $name;
     protected float $price;
     protected string $type;
+    protected string $attribute;
 
-    protected function __construct(array $data)
+    public function __construct(array $data)
     {
         $this->sku = $data["sku"];
         $this->name = $data["name"];
         $this->price = $data["price"];
+        $this->type = $data["type"];
     }
 
     public function getSku(): string
@@ -54,13 +56,24 @@ class Product implements IProduct
         $this->type = $type;
     }
 
+    public function getAttribute(): string
+    {
+        return $this->attribute;
+    }
+
+    public function setAttribute(string $attribute): void
+    {
+        $this->attribute = $attribute;
+    }
+
     public function getInfo(): array
     {
         return [
             "sku" => $this->getSku(),
             "name" => $this->getName(),
             "price" => $this->getPrice(),
-            "type" => $this->getType()
+            "type" => $this->getType(),
+            "attribute" => $this->getAttribute()
         ];
     }
 }

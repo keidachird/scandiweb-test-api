@@ -18,41 +18,47 @@ class ProductGateway
 
         $stmt = $this->conn->query($sql);
 
-        $data = [];
+        $products = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            switch ($row["type"]) {
+                case "dvd":
+                    $products[] = new ProductDvd($row);
+                    break;
+                case "book":
+                    $products[] = new ProductBook($row);
+                    break;
+                case "furniture":
+                    $products[] = new ProductFurniture($row);
+                    break;
+            }
         }
 
-        return $data;
+        return $products;
     }
 
     // Create a product
-    public function create(array $data): string
+    public function create(Product $product): string
     {
-        $sql = "INSERT INTO products (sku, name, price, type, weight, size, height, width, length)
-                VALUES (:sku, :name, :price, :type, :weight, :size, :height, :width, :length)";
+        $sql = "INSERT INTO products (sku, name, price, type, attribute)
+                VALUES (:sku, :name, :price, :type, :attribute)";
 
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bindValue(":sku", $data["sku"]);
-        $stmt->bindValue(":name", $data["name"]);
-        $stmt->bindValue(":price", $data["price"]);
-        $stmt->bindValue(":type", $data["type"]);
-        $stmt->bindValue(":weight", $data["weight"] ?? null);
-        $stmt->bindValue(":size", $data["size"] ?? null);
-        $stmt->bindValue(":height", $data["height"] ?? null);
-        $stmt->bindValue(":width", $data["width"] ?? null);
-        $stmt->bindValue(":length", $data["length"] ?? null);
+        $stmt->bindValue(":sku", $product->getSku());
+        $stmt->bindValue(":name", $product->getName());
+        $stmt->bindValue(":price", $product->getPrice());
+        $stmt->bindValue(":type", $product->getType());
+        $stmt->bindValue(":attribute", $product->getAttribute());
 
         $stmt->execute();
 
-        return $data["sku"];
+        return $product->getSku();
     }
 
     // Mass delete based on list of sku
-    public function massDelete(array $data): void
+    public function massDelete(array $skuList): void
     {
-        foreach ($data as $sku) {
+        foreach ($skuList as $sku) {
             $sql = "DELETE FROM products
                     WHERE sku=:sku";
 
@@ -65,7 +71,7 @@ class ProductGateway
     }
 
     // Checks if sku is unique
-    public function checkUniqueSku(string $sku): bool
+    public function isUniqueSku(string $sku): bool
     {
         $sql = "SELECT * 
                 FROM products

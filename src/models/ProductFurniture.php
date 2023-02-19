@@ -10,10 +10,18 @@ class ProductFurniture extends Product
     {
         parent::__construct($data);
 
-        $this->type = "furniture";
-        $this->height = $data["height"];
-        $this->width = $data["width"];
-        $this->length = $data["length"];
+        if (array_key_exists("attribute", $data)) {
+            $this->attribute = $data["attribute"];
+            $attribute_parts = explode("x", $this->attribute);
+            $this->height = $attribute_parts[0];
+            $this->width = $attribute_parts[1];
+            $this->length = $attribute_parts[2];
+        } else {
+            $this->height = $data["height"];
+            $this->width = $data["width"];
+            $this->length = $data["length"];
+            $this->attribute = $this->height . "x" . $this->width . "x" . $this->length;
+        }
     }
 
     public function getHeight(): float
@@ -44,15 +52,5 @@ class ProductFurniture extends Product
     public function setLength(float $length): void
     {
         $this->length = $length;
-    }
-
-    public function getInfo(): array
-    {
-        $data = parent::getInfo();
-        $data["height"] = $this->getHeight();
-        $data["width"] = $this->getWidth();
-        $data["length"] = $this->getLength();
-
-        return $data;
     }
 }

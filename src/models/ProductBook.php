@@ -8,8 +8,13 @@ class ProductBook extends Product
     {
         parent::__construct($data);
 
-        $this->type = "book";
-        $this->weight = $data["weight"];
+        if (array_key_exists("attribute", $data)) {
+            $this->attribute = $data["attribute"];
+            $this->weight = (float)$this->attribute;
+        } else {
+            $this->weight = $data["weight"];
+            $this->attribute = $this->weight . ' Kg';
+        }
     }
 
     public function getWeight(): float
@@ -20,13 +25,5 @@ class ProductBook extends Product
     public function setWeight(float $weight): void
     {
         $this->weight = $weight;
-    }
-
-    public function getInfo(): array
-    {
-        $data = parent::getInfo();
-        $data["weight"] = $this->getWeight();
-
-        return $data;
     }
 }

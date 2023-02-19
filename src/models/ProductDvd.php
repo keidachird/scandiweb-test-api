@@ -8,8 +8,13 @@ class ProductDvd extends Product
     {
         parent::__construct($data);
 
-        $this->type = "dvd";
-        $this->size = $data["size"];
+        if (array_key_exists("attribute", $data)) {
+            $this->attribute = $data["attribute"];
+            $this->size = (float)$this->attribute;
+        } else {
+            $this->size = $data["size"];
+            $this->attribute = $this->size . ' MB';
+        }
     }
 
     public function getSize(): float
@@ -20,13 +25,5 @@ class ProductDvd extends Product
     public function setSize(float $size): void
     {
         $this->size = $size;
-    }
-
-    public function getInfo(): array
-    {
-        $data = parent::getInfo();
-        $data["size"] = $this->getSize();
-
-        return $data;
     }
 }

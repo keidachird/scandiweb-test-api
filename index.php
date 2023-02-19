@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-// Set classes autoload function
+// Set autoload function for classes
+// TODO rewrite in psr-4
 spl_autoload_register(function ($class) {
     if (file_exists(__DIR__ . "/src/config/$class.php")) {
         require __DIR__ . "/src/config/$class.php";
@@ -29,16 +30,17 @@ header("Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type
 
 // Enable environment variables
 require "vendor/autoload.php";
-\Dotenv\Dotenv::createUnsafeImmutable(__DIR__)->load();
+$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
+$dotenv->load();
 
 // Get request details
 $method = $_SERVER["REQUEST_METHOD"];
-$uri_parts = explode("/", $_SERVER["REQUEST_URI"]);
+$uri = explode("/", $_SERVER["REQUEST_URI"]);
 
 // Process request
-$database = new Database();
+$database = new Database($_ENV["DB_HOST"], $_ENV["DB_PORT"], $_ENV["DB_NAME"], $_ENV["DB_USER"], $_ENV["DB_PASSWORD"]);
 $gateway = new ProductGateway($database);
 $controller = new ProductController($gateway);
-$controller->processRequest($method, $uri_parts);
+$controller->processRequest($method, $uri);
 
 

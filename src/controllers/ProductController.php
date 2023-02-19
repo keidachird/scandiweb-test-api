@@ -6,61 +6,30 @@ readonly class ProductController
     {
     }
 
-    public function processRequest(string $method, array $uri_parts): void
+    public function processRequest(string $method, array $uri): void
     {
-        // Check if uri has wrong format
-        if ($uri_parts[1] !== "" && $uri_parts[1] !== "add-product" || sizeof($uri_parts) > 2) {
-            http_response_code(404);
-            return;
-        }
+        // Check if uri is valid
+        $this->checkUri($method, $uri);
 
         switch ($method) {
-            // localhost/
             // Process "GET" request
             // Returns a list of products info
             case "GET":
-                // Checks if uri is correct for GET request
-                if ($uri_parts[1] === "add-product") {
-                    http_response_code(405);
-                    header("Access-Control-Allow-Methods: POST");
-                    break;
+                // Get array of products
+                $products = $this->gateway->getAll();
+
+                // Get info for each product
+                $productsInfo = [];
+                foreach ($products as $product) {
+                    $productsInfo[] = $product->getInfo();
                 }
-                $data = $this->gateway->getAll();
-
-                $result = [];
-                foreach ($data as $row) {
-                    $type = $row["type"];
-
-                    $product = null;
-                    switch ($type) {
-                        case "book":
-                            $product = new ProductBook($row);
-                            break;
-                        case "dvd":
-                            $product = new ProductDvd($row);
-                            break;
-                        case "furniture":
-                            $product = new ProductFurniture($row);
-                            break;
-                    }
-
-                    $result[] = $product->getInfo();
-                }
-                echo json_encode($result);
+                echo json_encode($productsInfo);
                 break;
 
-            // localhost/add-product
             // Process "POST" request
             // Create a new product
             case "POST":
-                // Checks if uri is correct for POST request
-                if ($uri_parts[1] === "") {
-                    http_response_code(405);
-                    header("Access-Control-Allow-Methods: GET, DELETE");
-                    break;
-                }
-
-                // Get product data
+                // Get product data from input
                 $data = (array)json_decode(file_get_contents("php://input"), true);
 
                 // Product data validation
@@ -68,6 +37,16 @@ readonly class ProductController
                 if (!empty($errors)) {
                     http_response_code(422);
                     echo json_encode(["errors" => $errors]);
+                    break;
+                }
+
+                // Check for unique sku
+                $isUnique = $this->gateway->isUniqueSku($data["sku"]);
+                if (!$isUnique) {
+                    http_response_code(409);
+                    echo json_encode([
+                        "message" => "Product with this sku already exists"
+                    ]);
                     break;
                 }
 
@@ -86,7 +65,7 @@ readonly class ProductController
                 }
 
                 // Add new product row in db
-                $sku = $this->gateway->create($product->getInfo());
+                $sku = $this->gateway->create($product);
 
                 http_response_code(201);
                 echo json_encode([
@@ -95,7 +74,6 @@ readonly class ProductController
                 ]);
                 break;
 
-            // localhost/
             // Process "DELETE" request
             // Mass delete products
             case "DELETE":
@@ -103,50 +81,85 @@ readonly class ProductController
                 $data = (array)json_decode(file_get_contents("php://input"), true);
 
                 // There is no validation for sku
-                // If sku doesn't exist - just ignore it
+                // If sku doesn't exist - just ignores it
 
                 // Delete rows in db with specified sku
                 $this->gateway->massDelete($data["skuList"]);
 
-                http_response_code(200);
-                echo json_encode([
-                    "data" => $data
-                ]);
+                http_response_code(204);
                 break;
         }
     }
 
+    private function checkUri(string $method, array $uri): void
+    {
+        // "" or "add-product"
+        $resource = $uri[1];
+
+        switch ($method) {
+            case "GET":
+            case "DELETE":
+                if ($resource !== "") {
+                    http_response_code(404);
+                    echo json_encode([
+                        "message" => "Page not found"
+                    ]);
+                    exit;
+                }
+                break;
+
+            case "POST":
+                if ($resource !== "add-product") {
+                    http_response_code(404);
+                    echo json_encode([
+                        "message" => "Page not found"
+                    ]);
+                    exit;
+                }
+                break;
+        }
+    }
+
+    // TODO rewrite in Product class method ???
+    // TODO rewrite for better validation
     // Get array of validation errors
     private function getValidationErrors(array $data): array
     {
         $errors = [];
 
         // Check for empty inputs
-        empty($data["sku"]) && $errors[] = "sku is required";
-        empty($data["name"]) && $errors[] = "name is required";
-        empty($data["price"]) && $errors[] = "price is required";
-        empty($data["type"]) && $errors[] = "type is required";
+        empty($data["sku"]) && $errors[] = "SKU is required";
+        empty($data["name"]) && $errors[] = "Name is required";
+        empty($data["price"]) && $errors[] = "Price is required";
+        empty($data["type"]) && $errors[] = "Type is required";
+
+        // Check for invalid values
+        $data["price"] <= 0 && $errors[] = "Invalid value for price";
 
         // Check for corresponding properties for each type of product
         switch ($data["type"]) {
             case "book":
-                empty($data["weight"]) && $errors[] = "weight is required for type book";
+                empty($data["weight"]) && $errors[] = "Weight is required for type book";
+                $data["weight"] <= 0 && $errors[] = "Invalid value for weight";
+
                 break;
             case "dvd":
-                empty($data["size"]) && $errors[] = "size is required for type dvd";
+                empty($data["size"]) && $errors[] = "Size is required for type dvd";
+                $data["size"] <= 0 && $errors[] = "Invalid value for size";
+
                 break;
             case "furniture":
-                empty($data["height"]) && $errors[] = "height is required for type furniture";
-                empty($data["width"]) && $errors[] = "width is required for type furniture";
-                empty($data["length"]) && $errors[] = "length is required for type furniture";
+                empty($data["height"]) && $errors[] = "Height is required for type furniture";
+                empty($data["width"]) && $errors[] = "Width is required for type furniture";
+                empty($data["length"]) && $errors[] = "Length is required for type furniture";
+                $data["height"] <= 0 && $errors[] = "Invalid value for height";
+                $data["width"] <= 0 && $errors[] = "Invalid value for width";
+                $data["length"] <= 0 && $errors[] = "Invalid value for length";
+
                 break;
             default:
-                $errors[] = "wrong type of product";
+                $errors[] = "Invalid type of product";
         }
-
-        // Check for unique sku
-        $isUnique = $this->gateway->checkUniqueSku($data["sku"]);
-        $isUnique || $errors[] = "sku must be unique";
 
         return $errors;
     }
