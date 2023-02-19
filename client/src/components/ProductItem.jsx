@@ -1,21 +1,8 @@
 import { useState } from 'react'
-import './ProductItem.scss'
+import '../sass/ProductItem.scss'
 
 export default function ProductItem({ data, handleProductChange }) {
   const [isChecked, setIsChecked] = useState(false)
-
-  const getProductInfo = data => {
-    switch (data.type) {
-      case 'dvd':
-        return `Size: ${data.size} MB`
-      case 'book':
-        return `Weight: ${data.weight} KG`
-      case 'furniture':
-        return `Dimension: ${data.height}x${data.width}x${data['length']}`
-      default:
-        return
-    }
-  }
 
   const handleCheck = () => {
     setIsChecked(!isChecked)
@@ -33,7 +20,14 @@ export default function ProductItem({ data, handleProductChange }) {
       <div className='product-item__sku'>{data.sku}</div>
       <div className='product-item__name'>{data.name}</div>
       <div className='product-item__price'>{data.price} $</div>
-      <div className='product-item__info'>{getProductInfo(data)}</div>
+      <div className='product-item__attribute'>
+        <span>
+          {data.type === 'dvd' && 'Size: '}
+          {data.type === 'book' && 'Weight: '}
+          {data.type === 'furniture' && 'Dimension: '}
+        </span>
+        {data.attribute}
+      </div>
     </div>
   )
 }

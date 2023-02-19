@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import './ProductCreate.scss'
+import '../sass/ProductCreate.scss'
 
 export default function ProductCreate() {
   const [productData, setProductData] = useState({
@@ -62,7 +62,7 @@ export default function ProductCreate() {
   return (
     <div className='product-create container'>
       {/* Header */}
-      <header className='product-list__header'>
+      <header className='header product-list__header'>
         <h2 className='product-list__title'>Product Add</h2>
 
         <button type='submit' form='product_form' className='btn btn--add'>
@@ -148,7 +148,7 @@ export default function ProductCreate() {
             value={productData.type}
             onChange={e => handleTypeChange(e)}
           >
-            <option value='default'></option>
+            <option value='default' disabled hidden></option>
             <option value='dvd'>DVD</option>
             <option value='book'>Book</option>
             <option value='furniture'>Furniture</option>

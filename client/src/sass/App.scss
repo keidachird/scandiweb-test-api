@@ -23,7 +23,7 @@ body {
 // Reusable elements
 .container {
   max-width: 120rem;
-  padding: 3rem;
+  padding: 0 3rem;
   margin-inline: auto;
 }
 
@@ -65,18 +65,28 @@ body {
   flex-direction: column;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+
+  padding: 3rem;
+  margin-bottom: 3rem;
+  border-bottom: 0.2rem solid #343a40;
+}
+
 .main {
   flex: 1 0 auto;
 }
 
 .footer {
   flex: 0 0 auto;
+  margin-top: 3rem;
 
   &__text {
     font-size: 2rem;
     text-align: center;
 
     border-top: 0.2rem solid #343a40;
-    padding: 2rem;
+    padding: 3rem;
   }
 }

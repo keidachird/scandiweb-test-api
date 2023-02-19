@@ -1,15 +1,15 @@
-import './App.scss'
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Main from './components/Main'
+
 import ProductList from './components/ProductList'
 import Footer from './components/Footer'
 import ProductCreate from './components/ProductCreate'
+import './sass/App.scss'
 
 function App() {
   return (
     <div className='App'>
-      <Main>
+      <main className='main'>
         <BrowserRouter>
           <Routes>
             <Route index element={<ProductList />} />
@@ -19,7 +19,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
-      </Main>
+      </main>
 
       <Footer />
     </div>

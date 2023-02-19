@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import ProductItem from './ProductItem'
-import './ProductList.scss'
+import '../sass/ProductList.scss'
 
 export default function ProductList() {
   const [products, setProducts] = useState([])
@@ -45,7 +45,7 @@ export default function ProductList() {
   return (
     <div className='product-list container'>
       {/* Header */}
-      <header className='product-list__header'>
+      <header className='header product-list__header'>
         <h2 className='product-list__title'>Product List</h2>
 
         <Link to='add-product' className='btn btn--add'>
