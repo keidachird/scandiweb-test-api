@@ -1,6 +1,3 @@
-vendor/
 .idea/
+vendor/
 .env
-
-node_modules/
-.prettierrc

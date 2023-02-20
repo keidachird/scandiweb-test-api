@@ -32,7 +32,7 @@ readonly class ProductController
                 // Get product data from input
                 $data = (array)json_decode(file_get_contents("php://input"), true);
 
-                // Product data validation
+                // Validate input data
                 $errors = $this->getValidationErrors($data);
                 if (!empty($errors)) {
                     http_response_code(422);

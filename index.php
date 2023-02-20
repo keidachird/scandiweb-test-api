@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 // Set autoload function for classes
-// TODO rewrite in psr-4
+// TODO rewrite in composer.json psr-4 format
 spl_autoload_register(function ($class) {
     if (file_exists(__DIR__ . "/src/config/$class.php")) {
         require __DIR__ . "/src/config/$class.php";
