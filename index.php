@@ -38,7 +38,13 @@ $method = $_SERVER["REQUEST_METHOD"];
 $uri = explode("/", $_SERVER["REQUEST_URI"]);
 
 // Process request
-$database = new Database($_ENV["DB_HOST"], $_ENV["DB_PORT"], $_ENV["DB_NAME"], $_ENV["DB_USER"], $_ENV["DB_PASSWORD"]);
+$database = new Database(
+    getenv("DB_HOST"),
+    getenv("DB_PORT"),
+    getenv("DB_NAME"),
+    getenv("DB_USER"),
+    getenv("DB_PASSWORD")
+);
 $gateway = new ProductGateway($database);
 $controller = new ProductController($gateway);
 $controller->processRequest($method, $uri);
