@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 class ProductBook extends Product
 {
     private float $weight;

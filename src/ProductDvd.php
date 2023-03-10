@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 class ProductDvd extends Product
 {
     private float $size;

@@ -2,25 +2,14 @@
 
 declare(strict_types=1);
 
-// Set autoload function for classes
-// TODO rewrite in composer.json psr-4 format
-spl_autoload_register(function ($class) {
-    if (file_exists(__DIR__ . "/src/config/$class.php")) {
-        require __DIR__ . "/src/config/$class.php";
-    }
+require __DIR__ . "/vendor/autoload.php";
 
-    if (file_exists(__DIR__ . "/src/controllers/$class.php")) {
-        require __DIR__ . "/src/controllers/$class.php";
-    }
-
-    if (file_exists(__DIR__ . "/src/models/$class.php")) {
-        require __DIR__ . "/src/models/$class.php";
-    }
-});
+use App\{Database, ProductGateway, ProductController};
+use Dotenv\Dotenv;
 
 // Set error and exception handler functions
-set_error_handler("ErrorHandler::handleError");
-set_exception_handler("ErrorHandler::handleException");
+set_error_handler("App\ErrorHandler::handleError");
+set_exception_handler("App\ErrorHandler::handleException");
 
 // Set headers
 header("Content-type: application/json; charset=UTF-8");
@@ -29,8 +18,7 @@ header("Access-Control-Allow-Methods: GET, POST, DELETE");
 header("Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type");
 
 // Enable environment variables
-require "vendor/autoload.php";
-$dotenv = \Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
+$dotenv = Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
 
 // Get request details
@@ -48,5 +36,7 @@ $database = new Database(
 $gateway = new ProductGateway($database);
 $controller = new ProductController($gateway);
 $controller->processRequest($method, $uri);
+
+//var_dump(get_included_files());
 
 

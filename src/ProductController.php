@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 readonly class ProductController
 {
     public function __construct(private ProductGateway $gateway)

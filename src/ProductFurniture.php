@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 class ProductFurniture extends Product
 {
     private float $height;

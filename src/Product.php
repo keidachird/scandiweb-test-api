@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 abstract class Product
 {
     protected string $sku;
