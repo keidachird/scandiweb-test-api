@@ -17,9 +17,9 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE");
 header("Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-type");
 
-// Enable environment variables
-$dotenv = Dotenv::createUnsafeImmutable(__DIR__);
-$dotenv->load();
+// Disable environment variables for heroku
+//$dotenv = Dotenv::createUnsafeImmutable(__DIR__);
+//$dotenv->load();
 
 // Get request details
 $method = $_SERVER["REQUEST_METHOD"];
