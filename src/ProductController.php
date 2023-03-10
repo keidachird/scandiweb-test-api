@@ -35,7 +35,7 @@ readonly class ProductController
                 $data = (array)json_decode(file_get_contents("php://input"), true);
 
                 // Validate input data
-                $errors = $this->getValidationErrors($data);
+                $errors = ProductValidator::validate($data);
                 if (!empty($errors)) {
                     http_response_code(422);
                     echo json_encode(["errors" => $errors]);
@@ -52,19 +52,9 @@ readonly class ProductController
                     break;
                 }
 
-                // Create new product object
-                $product = null;
-                switch ($data["type"]) {
-                    case "book":
-                        $product = new ProductBook($data);
-                        break;
-                    case "dvd":
-                        $product = new ProductDvd($data);
-                        break;
-                    case "furniture":
-                        $product = new ProductFurniture($data);
-                        break;
-                }
+                // Create new product object based on type
+                $productClass = "App\Product" . ucfirst(strtolower($data["type"]));
+                $product = new $productClass($data);
 
                 // Add new product row in db
                 $sku = $this->gateway->create($product);
@@ -120,49 +110,5 @@ readonly class ProductController
                 }
                 break;
         }
-    }
-
-    // TODO rewrite in Product class method ???
-    // TODO rewrite for better validation
-    // Get array of validation errors
-    private function getValidationErrors(array $data): array
-    {
-        $errors = [];
-
-        // Check for empty inputs
-        empty($data["sku"]) && $errors[] = "SKU is required";
-        empty($data["name"]) && $errors[] = "Name is required";
-        empty($data["price"]) && $errors[] = "Price is required";
-        empty($data["type"]) && $errors[] = "Type is required";
-
-        // Check for invalid values
-        $data["price"] <= 0 && $errors[] = "Invalid value for price";
-
-        // Check for corresponding properties for each type of product
-        switch ($data["type"]) {
-            case "book":
-                empty($data["weight"]) && $errors[] = "Weight is required for type book";
-                $data["weight"] <= 0 && $errors[] = "Invalid value for weight";
-
-                break;
-            case "dvd":
-                empty($data["size"]) && $errors[] = "Size is required for type dvd";
-                $data["size"] <= 0 && $errors[] = "Invalid value for size";
-
-                break;
-            case "furniture":
-                empty($data["height"]) && $errors[] = "Height is required for type furniture";
-                empty($data["width"]) && $errors[] = "Width is required for type furniture";
-                empty($data["length"]) && $errors[] = "Length is required for type furniture";
-                $data["height"] <= 0 && $errors[] = "Invalid value for height";
-                $data["width"] <= 0 && $errors[] = "Invalid value for width";
-                $data["length"] <= 0 && $errors[] = "Invalid value for length";
-
-                break;
-            default:
-                $errors[] = "Invalid type of product";
-        }
-
-        return $errors;
     }
 }
